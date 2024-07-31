@@ -1,15 +1,12 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
+from django.urls import resolve
 from solos.views import index
 
-class IndexViewTestCase(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-    def test_index_view_basic(self):
+class SolosURLsTestCase(TestCase):
+    def test_root_url_uses_index_view(self):
         """
-        Test that index view returns a 200 response and uses
-        the correct template
+        Test that the root of the site resolves to the
+        correct view function
         """
-        request = self.factory.get('/')
-        with self.assertTemplateUsed("solos/index.html"):
-            response = index(request)
-            self.assertEqual(response.status_code, 200)
+        root = resolve('/')
+        self.assertEqual(root.func, index)
