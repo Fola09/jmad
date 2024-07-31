@@ -58,9 +58,16 @@ class StudentTestCase(LiveServerTestCase):
         self.browser.find_element(By.CSS_SELECTOR, 'form button').click()
         second_search_results = self.browser.find_elements(By.CSS_SELECTOR, '.jmad-search-result')
         self.assertEqual(len(second_search_results), 2)
-        self.fail('Incomplete Test')
         # He clicks on a search result.
+        second_search_results[0].click()
         # The solo page has the title, artist and album for
         # this particular solo.
+        self.assertEqual(self.browser.current_url, '{}/solos/2/'.format(self.live_server_url))
+        self.assertEqual(self.browser.find_element(By.CSS_SELECTOR, '#jmad-artist').text,'Cannonball Adderley')
+        self.assertEqual(self.browser.find_element(By.CSS_SELECTOR, '#jmad-track').text, 'All Blues' )
+        self.assertEqual(self.browser.find_element(By.CSS_SELECTOR, '#jmad-album').text, 'Kind of Blue')
         # He also sees the start time and end time of the
         # solo.
+        self.assertEqual(self.browser.find_element(By.CSS_SELECTOR, '#jmad-start-time').text, '2:06')
+        self.assertEqual(self.browser.find_element(By.CSS_SELECTOR, '#jmad-end-time').text,'4:01')
+        self.fail('Incomplete Test')
