@@ -1,12 +1,25 @@
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from solos.models import Solo
 
 class StudentTestCase(LiveServerTestCase):
     def setUp(self):
-        options = webdriver.ChromeOptions() 
-        options.add_argument('–headless')
-        self.browser = webdriver.Chrome(options=options)
+        self.solo1 = Solo.objects.create(
+               instrument='saxophone',
+               artist='John Coltrane',
+               track='My Favorite Things'
+           )
+        self.solo2 = Solo.objects.create(
+            instrument='saxophone',
+            artist='Cannonball Adderley',
+            track='All Blues'
+        )
+        self.solo3 = Solo.objects.create(
+            instrument='saxophone',
+            artist='Cannonball Adderley',
+            track='Waltz for Debby')
+        self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(2)
 
     def tearDown(self):
