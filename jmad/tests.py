@@ -4,7 +4,9 @@ from selenium.webdriver.common.by import By
 
 class StudentTestCase(LiveServerTestCase):
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        options = webdriver.ChromeOptions() 
+        options.add_argument('–headless')
+        self.browser = webdriver.Chrome(options=options)
         self.browser.implicitly_wait(2)
 
     def tearDown(self):
@@ -22,14 +24,28 @@ class StudentTestCase(LiveServerTestCase):
         # the name of the site in the heading.
         brand_element = self.browser.find_element(By.CSS_SELECTOR, ".navbar-brand")
         self.assertEqual('JMAD', brand_element.text)
-        self.fail("Incomplete test!")
         # He sees the inputs of the search form, including
         # labels and placeholders.
+        instrument_input = self.browser.find_element(By.CSS_SELECTOR, "input#jmad-instrument")
+        self.assertEqual(instrument_input.get_attribute('placeholder'), 'i.e. trumpet')
+        artist_input = self.browser.find_element(By.CSS_SELECTOR,'input#jmad-artist')
+        self.assertIsNotNone(self.browser.find_element(By.CSS_SELECTOR, 'label[for="jmad-artist"]'))
+        self.assertEqual(artist_input.get_attribute('placeholder'), 'i.e. Davis')
         # He types in the name of his instrument and submits
         # it.
+        instrument_input.send_keys('saxophone')
+        self.browser.find_element(By.CSS_SELECTOR, 'form button').click()
         # He sees too many search results...
         # ...so he adds an artist to his search query and
         # gets a more manageable list.
+        search_results = self.browser.find_elements(By.CSS_SELECTOR, '.jmad-search-result')
+        self.assertGreater(len(search_results), 2)
+        second_artist_input = self.browser.find_element(By.CSS_SELECTOR, 'input#jmad-artist')
+        second_artist_input.send_keys('Cannonball Adderley')
+        self.browser.find_element(By.CSS_SELECTOR, 'form button').click()
+        second_search_results = self.browser.find_elements(By.CSS_SELECTOR, '.jmad-search-result')
+        self.assertEqual(len(second_search_results), 2)
+        self.fail('Incomplete Test')
         # He clicks on a search result.
         # The solo page has the title, artist and album for
         # this particular solo.
